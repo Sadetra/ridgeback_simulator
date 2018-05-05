@@ -1,8 +1,11 @@
 <launch>
+
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
   <arg name="world_name" default="$(find ridgeback_gazebo)/worlds/ridgeback_race.world" />
+  <arg name="joystick_on" default="false" />
+  <arg name="verbose" default="false" />
 
   <!-- Configuration of Ridgeback which you would like to simulate.
        See ridgeback_description for details. -->
@@ -16,6 +19,7 @@
     <arg name="headless" value="$(arg headless)" />
     <arg name="world_name" value="$(arg world_name)" />
     <arg name="paused" value="false"/>
+    <arg name="verbose"           value="$(arg verbose)"/>
   </include>
 
   <!-- Load Ridgeback's description, controllers, and teleop nodes. -->
@@ -23,9 +27,13 @@
     <arg name="config" value="$(arg config)" />
   </include>
   <include file="$(find ridgeback_control)/launch/control.launch" />
-  <include file="$(find ridgeback_control)/launch/teleop.launch">
-    <arg name="joystick" value="false"/>
-  </include>
+
+  <group if="$(arg joystick_on)">
+    <include file="$(find ridgeback_control)/launch/turtle_teleop.launch"/>
+  </group>
+
+  <include file="$(find cri_efe_description)/launch/camera.launch"/>
+
 
   <rosparam param="/gazebo_ros_control/pid_gains">
     front_left_wheel:
@@ -46,9 +54,12 @@
       d: 0
   </rosparam>
 
-  <!-- Spawn Ridgeback -->
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
-        args="-urdf -model ridgeback -param robot_description -x 0 -y 0 -z 0.1" />
-  <!--<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
-        args="-sdf -model ridgeback -file /Users/mikepurvis/ridgeback_ws/ridgeback.sdf -x 0 -y 0 -z 0.1" /> -->
+  <!-- Spawn Ridgeback-->
+
+  <node name="spawner_ridgeback" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model ridgeback  -param robot_description -x 0 -y 0 -z 0.1" />
+
+  <node name="spawner_camera" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+      args="-urdf -model camera -param camera_description -x 0 -y 0 -z 0.0" />
+
 </launch>
