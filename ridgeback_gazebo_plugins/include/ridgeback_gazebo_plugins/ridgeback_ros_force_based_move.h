@@ -50,7 +50,7 @@ namespace gazebo {
     public:
       GazeboRosForceBasedMove();
       ~GazeboRosForceBasedMove();
-      void Load(physics::ModelPtr parent, sdf::ElementPtr sdf);
+      virtual void Load(physics::ModelPtr parent, sdf::ElementPtr sdf);
 
     protected:
       virtual void UpdateChild();

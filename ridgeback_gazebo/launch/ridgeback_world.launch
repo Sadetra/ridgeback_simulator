@@ -1,5 +1,6 @@
 <launch>
 
+  <arg name="run_gazebo_gui" default="true" />
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
